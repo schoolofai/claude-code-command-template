@@ -1,5 +1,6 @@
 ## HIGH LEVEL FEATURE BREIF:
 [Dump all your thoughts about the feature you have in mind - be as detailed as you can , including user stories , acceptance criteria,mermaid block diagrams etc. tech stack ]
+[Claude will put all its plans and todo lists from the current context in this section ]
 
 ## TESTING
 [Add or reference (use @ ) any testing specifications and standards]
