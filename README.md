@@ -17,7 +17,7 @@ High-Level Brief → PRD → Task List → Implementation → Documentation
 ```
 
 ### Stage 1: High-Level Brief
-Create a simple markdown file describing your feature idea.
+Create a simple markdown file describing your feature idea. Use `high-level-brief.example.md` as a template - this file helps you structure your brief with sections for feature details, testing specifications, relevant existing files, code examples, and documentation. You can work with Claude in plan mode (shift+tab in Claude REPL) to develop your ideas, then ask Claude to create a structured high-level brief based on your planning discussion.
 
 ### Stage 2: Product Requirements Document (PRD)
 Use `/create-prd <brief-file>` to generate a detailed PRD with:
@@ -63,6 +63,7 @@ Use `/create-documentation <feature-name>` to generate comprehensive feature doc
 │       ├── tasks-prd-[name].md # Implementation task list
 │       └── README.md         # Feature documentation
 ├── docs/                     # Project documentation
+├── high-level-brief.example.md # Template for creating feature briefs
 └── README.md                # This file
 ```
 
