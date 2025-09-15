@@ -7,14 +7,15 @@ To guide an AI assistant in creating a detailed Product Requirements Document (P
 ## Process
 
 1.**Receive Initial High Level Breif:** The user provides a brief description or request for a new feature or functionality from High Level Breif File : $ARGUMENTS
-2.**Ask Clarifying Questions:** Before writing the PRD, the AI *must* ask clarifying questions to gather sufficient detail. The goal is to understand the "what" and "why" of the feature, not necessarily the "how" (which the developer will figure out).
+2.**Ask Clarifying Questions:** Before writing the PRD, the AI *must* ask clarifying questions to gather sufficient detail. The goal is to understand the "what" and "why" of the feature, not necessarily the "how" (which the developer will figure out). The most important clarifying questions are to do with Agile Engineering practices and clean code and test driven development. 
 3.**Generate PRD:** Based on the initial prompt and the user's answers to the clarifying questions, generate a PRD using the structure outlined below.
 4.**Save PRD:** Create a sub-directory inside the directory `/tasks` ,name it based on the High level breif ,save the generated document as `prd-[feature-name].md` inside the subdirectory. final prd will be stored in `/task/[feature name]/prd-[feature-name].md`.
 5. Mover the High Level brief file specified in $ARGUMENTS to the same directory as the prd.
 ## Clarifying Questions (Examples)
 
 The AI should adapt its questions based on the prompt, but here are some common areas to explore:
-
+*  **Testing Strategy**: What is your testing strategy - TDD , Outside-in TDD?
+*  **Testing Stack**: Any prefered testing stack or should I use the most appropriate testing stack for the technology stack ?
 *   **Problem/Goal:** "What problem does this feature solve for the user?" or "What is the main goal we want to achieve with this feature?"
 *   **Target User:** "Who is the primary user of this feature?"
 *   **Core Functionality:** "Can you describe the key actions a user should be able to perform with this feature?"

@@ -1,174 +1,37 @@
 # Rule: Generating a Task List from a PRD
-The user provides the location for PRD Sub-Directory under @tasks/ - it contains two files - a high level brief and a prd document.
-PRD Sub-Directory : $ARGUMENTS
+The user provides the location for PRD Sub-Directory under @tasks/ - it contains two files - a high level brief and a prd document. 
+PRD Directory : $ARGUMENTS
 ## Goal
 
-For claude to create a series of MVPs with incremental complexity based on the lean startup methond and then create a list of tasks for each MVP based on an existing Product Requirements Document (PRD) and the high level brief document under the tasks/ folder uder the sub-directory @ARGUMENTS . The task list under each MVP  should guide a developer through implementation incrementatlly. There should always be an MVP 0 that setup up testing and devops environment.
+To guide an AI assistant in creating a detailed, step-by-step task list in Markdown format based on an existing Product Requirements Document (PRD). The task list should guide a developer through implementation.
 
 ## Output
 
 - **Format:** Markdown (`.md`)
-- **Location:** `/tasks/$ARGUMENTS`
+- **Location:** `/tasks/[high level brief directory]`
 - **Filename:** `tasks-[prd-file-name].md` (e.g., `tasks-prd-user-profile-editing.md`)
+## Process
 
-## Detailed  Process
-
-1.  **Receive PRD Reference and high level breif :** The user points the AI to a specific sub-directory under tasks/ directory with the name $ARGUMENTS - which contains two files 1. PRD 2.High level Brief
+1.  **Receive PRD Reference:** The user points the AI to a specific PRD file
 2.  **Analyze PRD:** The AI reads and analyzes the functional requirements, user stories, and other sections of the specified PRD.
-3.  **Generate MVP Based Tasks:** Based on the PRD and high level brief analysis, create the file and Create a task list grouped by **Lean Startup–style MVPs**. For each MVP
-   - define **vertical user stories** starting with a **walking skeleton**, then iteratively add layers to build out the feature in phased slices.
-   -  Each MVP should describe what the end product is going to be functionally and what capabilities it will have enabled the user with.
-   -  Then generate **high-level tasks** for each MVP in a strict **Outside-In TDD** sequence from *Growing Object-Oriented Software, Guided by Tests* — start with an end-to-end acceptance test, drive the outermost interface, and descend through collaborators with focused unit tests, faking or extracting implementations as you progress.
-   -  Each slice must deliver **visible, shippable value** to the user.
-   -  An MVP can be considered done when there is a.
-    a. value delivered
-    b. with working software
-    c. all outside and unit tests are passing.
-   - **MVP 0** - There should always be an MVP zero that sets up infrastructure for testing the app based on the tech stack specified in the high level brief under the $ARGUMENTS subfolder in task/ root folder. This phase should install all dependencies and tools for - e2e test (e.g. playwright), integration tests and unit tests. There should be hello world tests run to validate that the testing infra is setup.
+3.  **Phase 1: Generate Parent Tasks:** Based on the PRD analysis, create the file and generate the main, high-level tasks required to implement the feature. Use your judgement on how many high-level tasks to use. It's likely to be about 5. Parent tasks should be testable and should leave the implementation is a working state. At the end of each test there should be passing tests. If the test does not have a test infrastructure then the first parent task should always be setting up test infrastructure based on technical stack. The testing stack shoud cover all types of testing -  e2e test (e.g. playwright), integration tests and unit tests.  Present these tasks to the user in the specified format (without sub-tasks yet). Inform the user: "I have generated the high-level tasks based on the PRD. Ready to generate the sub-tasks? Respond with 'Go' to proceed."
+4.  **Wait for Confirmation:** Pause and wait for the user to respond with "Go".
+5.  **Phase 2: Generate Sub-Tasks:** Once the user confirms, break down each parent task into smaller, actionable sub-tasks necessary to complete the parent task. The sub-tasks should be designed to follow Strict Test Driven Development - outside in TDD should be followed when appropriate.  Ensure sub-tasks logically follow from the parent task and cover the implementation details implied by the PRD. The final sub-task should always be run tests to ensure they are passing.
+For each subtask detail the following 
+a. what files will be created or updated 
+b. provide code or psuedo code for each of these files to guide the implementation phase.
+6.  **Identify Relevant Files:** Based on the tasks and PRD, identify potential files that will need to be created or modified. List these under the `Relevant Files` section, including corresponding test files if applicable.
+7.  **Compatible With Outside-in TDD or TDD** - when generating tasks and sub-task bear in mind that Outside-in TDD or TDD will be used to execute the tasks.
+8.  **Generate Final Output:** Combine the parent tasks, sub-tasks, relevant files, and notes into the final Markdown structure.
+9.  **Save Task List:** Save the generated document in the tasks/@ARGUMENTS  directory with the filename `tasks-[prd-file-name].md`, where `[prd-file-name]` matches the base name of the input PRD file (e.g., if the input was `prd-user-profile-editing.md`, the output is `tasks-prd-user-profile-editing.md`).
 
-Here is the general format of the output of each MVP :
-
-MVP <number>: <mvp title>:
-
-Vertical User Story :
-<claude puts a high level vertical user story here>
-Outcome:
-<Claude puts the overall outcome of this drop - describes feature enabled>
-How to Test/ Run:
-<claude puts instructions of how user can run all the tests and use the features in this section>
-Tasks:
-<claude puts a list of tasks to implement the MVP here , the task list should start with writing a failing outside integration or e2e test , the intermediate tasks should be driven with unit tests and mocks using strick TDD red green refactor cycle, the last task should be making thie outer integration or e2e test pass>
-
-**Example:**
-<Example Start>
-MVP 0: Testing Infrastructure Setup
-
-  Vertical User Story:
-  As a developer, I want to have a complete testing setup so that I can write reliable tests
-  throughout development.
-
-  Outcome:
-  Development environment ready with all testing tools configured and verified working.
-
-  How to Test/Run:
-  npm test -- --watch
-  npm run test:e2e
-  npm run test:integration
-
-  Tasks:
-  - Set up project structure with package.json and dependencies
-  - Install and configure Jest for unit testing
-  - Install and configure Playwright for e2e testing
-  - Install and configure testing utilities (testing-library, etc.)
-  - Create hello world unit test and verify it passes
-  - Create hello world e2e test and verify it passes
-  - Set up test scripts in package.json
-
-  MVP 1: Walking Skeleton - Basic Playlist Query
-
-  Vertical User Story:
-  As a user, I want to input a song or mood and get a placeholder playlist so that I can see the
-  app's basic workflow.
-
-  Outcome:
-  A working end-to-end flow where users can input a query and receive a static playlist response.
-
-  How to Test/Run:
-  npm run dev
-  # Navigate to localhost:3000, enter "chill vibes" and see placeholder playlist
-  npm run test:e2e -- playlist-generation.e2e.test.ts
-
-  Tasks:
-  - Write failing e2e test for "User can input query and get playlist"
-  - Create basic React form component with input field (TDD)
-  - Create API route handler that returns mock playlist data (TDD)
-  - Connect frontend to backend API with fetch call (TDD)
-  - Style basic UI for query input and playlist display (TDD)
-  - Make e2e test pass by implementing full integration
-
-  MVP 2: Real AI Integration
-
-  Vertical User Story:
-  As a user, I want my playlist to be generated using AI so that I get personalized music
-  recommendations based on my input.
-
-  Outcome:
-  Dynamic playlist generation using OpenAI/AI service with real track recommendations from music
-  APIs.
-
-  How to Test/Run:
-  npm run test:integration -- ai-playlist.test.ts
-  npm run dev
-  # Enter any mood/genre and receive AI-generated playlist with real tracks
-
-  Tasks:
-  - Write failing integration test for "AI generates playlist from user query"
-  - Create AI service client with OpenAI integration (TDD)
-  - Implement music API client (Spotify/Apple Music) for track data (TDD)
-  - Create playlist generation algorithm combining AI + music data (TDD)
-  - Add error handling for AI/API failures with fallbacks (TDD)
-  - Update frontend to handle loading states and errors (TDD)
-  - Make integration test pass with full AI workflow
-
-  MVP 3: User Personalization
-
-  Vertical User Story:
-  As a user, I want my playlists to adapt based on my preferences and listening history so that
-  recommendations get better over time.
-
-  Outcome:
-  Personalized playlist generation that learns from user interactions and maintains preference
-  profiles.
-
-  How to Test/Run:
-  npm run test:e2e -- personalization.e2e.test.ts
-  npm run dev
-  # Create account, rate songs, see improved recommendations
-
-  Tasks:
-  - Write failing e2e test for "User preferences improve playlist quality"
-  - Create user authentication system (TDD)
-  - Implement user preference storage (database/local) (TDD)
-  - Create feedback mechanism (thumbs up/down, ratings) (TDD)
-  - Update AI prompt engineering to include user preferences (TDD)
-  - Implement recommendation learning algorithm (TDD)
-  - Make e2e test pass with full personalization flow
-
-  MVP 4: Advanced Playlist Features
-
-  Vertical User Story:
-  As a user, I want to save, share, and export my playlists so that I can use them across
-  different platforms and share with friends.
-
-  Outcome:
-  Complete playlist management with save, share, export capabilities and social features.
-
-  How to Test/Run:
-  npm run test:e2e -- playlist-management.e2e.test.ts
-  npm run dev
-  # Generate playlist, save it, share link, export to Spotify
-
-  Tasks:
-  - Write failing e2e test for "User can save, share, and export playlists"
-  - Implement playlist persistence and user library (TDD)
-  - Create sharing functionality with unique URLs (TDD)
-  - Add export integration to Spotify/Apple Music APIs (TDD)
-  - Implement playlist editing (add/remove/reorder tracks) (TDD)
-  - Create social features (public playlists, following) (TDD)
-  - Make e2e test pass with complete playlist management
-
-  Each MVP delivers visible value and follows Outside-In TDD: starting with failing acceptance
-  tests, driving the interface design, then implementing collaborators with focused unit tests and
-   mocks.
-<Example Stop>
 ## Output Format
 
 The generated task list _must_ follow this structure:
 
 ```markdown
-## Relevant Files with examples
+## Relevant Files
 
-- `path/to/potential/file1.e2e.test.ts` - MVP e2e tests or integration tests.
 - `path/to/potential/file1.ts` - Brief description of why this file is relevant (e.g., Contains the main component for this feature).
 - `path/to/file1.test.ts` - Unit tests for `file1.ts`.
 - `path/to/another/file.tsx` - Brief description (e.g., API route handler for data submission).
@@ -179,7 +42,21 @@ The generated task list _must_ follow this structure:
 ### Notes
 
 - Unit tests should typically be placed alongside the code files they are testing (e.g., `MyComponent.tsx` and `MyComponent.test.tsx` in the same directory).
+- Use `npx jest [optional/path/to/test/file]` to run tests. Running without a path executes all tests found by the Jest configuration.
 
+## Tasks
+
+- [ ] 1.0 Parent Task Title
+  - [ ] 1.1 [Sub-task description 1.1]
+  - [ ] 1.2 [Sub-task description 1.2]
+- [ ] 2.0 Parent Task Title
+  - [ ] 2.1 [Sub-task description 2.1]
+- [ ] 3.0 Parent Task Title (may not require sub-tasks if purely structural or configuration)
+```
+
+## Interaction Model
+
+The process explicitly requires a pause after generating parent tasks to get user confirmation ("Go") before proceeding to generate the detailed sub-tasks. This ensures the high-level plan aligns with user expectations before diving into details.
 
 ## Target Audience
 
